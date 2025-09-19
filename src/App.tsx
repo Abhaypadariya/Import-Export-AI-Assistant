@@ -79,6 +79,9 @@ const splitWordsWithIndex = (text: string) => {
 
 // --- Main App ---
 export default function App() {
+  // Base URL switchable via env var
+const API_BASE = import.meta.env.VITE_API_URL;
+
   const [messages, setMessages] = useState<Message[]>([]);
   const [userInput, setUserInput] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -90,15 +93,10 @@ export default function App() {
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const [markdownConverter, setMarkdownConverter] = useState<any>(null);
 
-  const [speakingMessageId, setSpeakingMessageId] = useState<number | null>(
-    null
-  );
+  const [speakingMessageId, setSpeakingMessageId] = useState<number | null>(null);
   const [isPaused, setIsPaused] = useState(false);
-  const [highlightedWordIndex, setHighlightedWordIndex] = useState<
-    number | null
-  >(null);
+  const [highlightedWordIndex, setHighlightedWordIndex] = useState<number | null>(null);
 
-  // ✅ Keep state for rendering + ref for onboundary
   const [currentWords, setCurrentWords] = useState<
     { word: string; start: number; end: number }[]
   >([]);
@@ -148,7 +146,7 @@ export default function App() {
   // --- Load conversations from DB ---
   const loadConversationsFromDB = async () => {
     try {
-      const res = await fetch("http://localhost:5000/api/conversations");
+      const res = await fetch(`${API_BASE}/api/conversations`);
       const data: ConversationMeta[] = await res.json();
       setConversations(data || []);
       if (!conversationId && data.length > 0) {
@@ -165,9 +163,7 @@ export default function App() {
     try {
       if (!convId) return;
       const res = await fetch(
-        `http://localhost:5000/api/chats?conversationId=${encodeURIComponent(
-          convId
-        )}`
+        `${API_BASE}/api/chats?conversationId=${encodeURIComponent(convId)}`
       );
       const data = await res.json();
       const mapped: Message[] = data.map((chat: any, i: number) => ({
@@ -185,7 +181,7 @@ export default function App() {
   const saveChatToDB = async (msg: Message, convId?: string) => {
     try {
       const cid = convId || conversationId || String(Date.now());
-      await fetch("http://localhost:5000/api/chats", {
+      await fetch(`${API_BASE}/api/chats`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -205,13 +201,13 @@ export default function App() {
   const deleteConversation = async (convId: string) => {
     try {
       await fetch(
-        `http://localhost:5000/api/conversations/${encodeURIComponent(convId)}`,
+        `${API_BASE}/api/conversations/${encodeURIComponent(convId)}`,
         { method: "DELETE" }
       );
       await loadConversationsFromDB();
       setConversationId(null);
       const updated = await (
-        await fetch("http://localhost:5000/api/conversations")
+        await fetch(`${API_BASE}/api/conversations`)
       ).json();
       if (updated.length > 0) {
         setConversationId(updated[0].conversationId);
@@ -364,7 +360,7 @@ export default function App() {
 
       // Update user message in DB
       try {
-        await fetch("http://localhost:5000/api/chats", {
+        await fetch(`${API_BASE}/api/chats`, {
           method: "PUT",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
@@ -384,7 +380,7 @@ export default function App() {
       if (aiMsg) {
         // Delete old AI response from DB
         try {
-          await fetch(`http://localhost:5000/api/chats/${aiMsg.id}`, {
+          await fetch(`${API_BASE}/api/chats/${aiMsg.id}`, {
             method: "DELETE",
           });
         } catch (err) {
@@ -501,8 +497,7 @@ CRITICAL: Your entire response MUST be in the following language: ${languageName
     <div className={`background-container ${theme}`}>
       <div className="chat-container">
         <div
-          className={`layout ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"
-            }`}
+          className={`layout ${isSidebarOpen ? "sidebar-open" : "sidebar-closed"}`}
         >
           {/* Sidebar */}
           <div className="conversations-panel">
@@ -518,9 +513,7 @@ CRITICAL: Your entire response MUST be in the following language: ${languageName
             </div>
             <div className="conversations-list">
               {conversations.length === 0 && (
-                <div className="no-convos">
-                  No conversations yet — start one!
-                </div>
+                <div className="no-convos">No conversations yet — start one!</div>
               )}
               {conversations
                 .sort(
@@ -531,8 +524,9 @@ CRITICAL: Your entire response MUST be in the following language: ${languageName
                 .map((conv) => (
                   <div
                     key={conv.conversationId || Math.random()}
-                    className={`conversation-item ${conversationId === conv.conversationId ? "active" : ""
-                      }`}
+                    className={`conversation-item ${
+                      conversationId === conv.conversationId ? "active" : ""
+                    }`}
                     onClick={() =>
                       conv.conversationId &&
                       handleSelectConversation(conv.conversationId)
@@ -629,7 +623,7 @@ CRITICAL: Your entire response MUST be in the following language: ${languageName
                       <>
                         <div className="message-bubble">
                           {msg.sender === "ai" &&
-                            speakingMessageId === msg.id ? (
+                          speakingMessageId === msg.id ? (
                             currentWords.map((w, i) => (
                               <span
                                 key={i}
@@ -699,7 +693,9 @@ CRITICAL: Your entire response MUST be in the following language: ${languageName
               <button
                 type="button"
                 onClick={handleToggleListening}
-                className={`mic-button ${isListening ? "listening" : ""}`}
+                className={`mic-button ${
+                  isListening ? "listening" : ""
+                }`}
               >
                 {isListening ? "🛑" : "🎤"}
               </button>
