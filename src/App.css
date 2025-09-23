@@ -411,3 +411,20 @@ body,
   font-size: 18px;
   padding: 8px 0;
 }
+/* Modern Outline (Ghost) Button */
+.logout-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: transparent;
+  color: #d9534f; /* Red text color */
+  border: 1px solid #d9534f; /* Red border */
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.logout-btn:hover {
+  background-color: #d9534f; /* Fills with red on hover */
+  color: white;
+}
