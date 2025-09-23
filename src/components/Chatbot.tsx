@@ -329,7 +329,7 @@ export default function Chatbot() {
       { role: "user", parts: [{ text: prompt }] },
     ];
     const payload = { contents: fullHistory };
-    const apiKey = "YOUR_GEMINI_API_KEY"; // Replace with your key
+    const apiKey = "AIzaSyCVrQzMfM239Hm-gGOklbeWEc_W-pRtuOQ"; // Replace with your key
 
     try {
       const response = await fetch(
