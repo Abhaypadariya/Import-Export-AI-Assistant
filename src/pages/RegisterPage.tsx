@@ -14,6 +14,7 @@ const RegisterPage = () => {
     e.preventDefault();
     try {
       // Use the API_BASE variable to make the request
+      
       const { data } = await axios.post(`${API_BASE}/api/auth/register`, { username, password });
       localStorage.setItem('userInfo', JSON.stringify(data));
       window.location.href = '/'; // Redirect to chat on successful registration
