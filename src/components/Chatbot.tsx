@@ -329,7 +329,7 @@ export default function Chatbot() {
       { role: "user", parts: [{ text: prompt }] },
     ];
     const payload = { contents: fullHistory };
-    const apiKey = "AIzaSyBzV_4nPoRxDBRPg8kZJXpXOY-0ZJ8e60A"; // Replace with your key
+    const apiKey = "AIzaSyDZiF3s7EJIYWBgxzWyxlOaDjhqbjo-5iY"; // Replace with your key
 
     try {
       const response = await fetch(
