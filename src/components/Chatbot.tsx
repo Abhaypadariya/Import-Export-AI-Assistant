@@ -329,11 +329,11 @@ export default function Chatbot() {
       { role: "user", parts: [{ text: prompt }] },
     ];
     const payload = { contents: fullHistory };
-    const apiKey = "AIzaSyDrUWk4nVsaovO-ZoRiiZcnISN0GK5g7us"; // Replace with your key
+    const apiKey = "AIzaSyCpnX3snLNg8_iesNkSVn4wGQeZIgIPPYA"; // Replace with your key
 
     try {
       const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
+        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
